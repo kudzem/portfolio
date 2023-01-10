@@ -1,33 +1,36 @@
 #include "bsearch.h"
+#include <cstring>
 
 namespace kudzem_algorithms
 {
-	bool less(const int a, const int b) {
-		return a < b;
+	bool less(void* a, void* b, size_t size) {
+		if (memcmp(a, b, size) < 0) return true;
+		return false;
 	}
 
-	bool greater(const int a, const int b) {
-		return a > b;
+	bool greater(void* a, void* b, size_t size) {
+		if (memcmp(a, b, size) > 0) return true;
+		return false;
 	}
 
-	int bsearch(int* arr, size_t arr_size, int* key, bool (*cmp)(int, int)) {
+	size_t bsearch(void* arr, size_t arr_size, void* key, size_t key_size, bool (*cmp)(void*, void*, size_t)) {
 
 		size_t left = 0;
 		size_t right = arr_size - 1;
 
 		while (true) {
 			size_t middle = (left + right) / 2;
-			if (arr[middle] == *key) {
+			if (memcmp((char*)arr + middle*key_size, key, key_size)==0) {
 				return middle;
 			}
 			else if (left + 1 == right) {
-				if (arr[right] == *key) {
+				if (memcmp((char*)arr + right * key_size, key, key_size) == 0) {
 					return right;
 				}
 			    break;
 			}
 
-			cmp(*key, arr[middle]) ? right = middle : left = middle;
+			cmp(key, (char*)arr + middle* key_size, key_size) ? right = middle : left = middle;
 		}
 		return -1;
 	}

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(bsearch_lib_kudzem)
 include_directories(./include)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 add_library(bsearchLib STATIC src/bsearch.cpp)
 add_executable(test test.cpp)
 target_link_libraries(test bsearchLib)
