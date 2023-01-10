@@ -2,5 +2,8 @@
 
 namespace kudzem_algorithms
 {
-	int bsearch(int* arr, size_t arr_size, int key);
+	bool less(int a, int b);
+	bool greater(int a, int b);
+
+	int bsearch(int* arr, size_t arr_size, int key, bool (*cmp)(int, int) = less);
 }

@@ -18,11 +18,11 @@ int main()
 
 	int arr3[] = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
 
-	//assert(kudzem_algorithms::bsearch(arr, sizeof(arr) / sizeof(arr[0]), 11) == -1);
-	//assert(kudzem_algorithms::bsearch(arr, sizeof(arr) / sizeof(arr[0]), 10) == 9);
-	//assert(kudzem_algorithms::bsearch(arr, sizeof(arr) / sizeof(arr[0]), 5) == 4);
-	//assert(kudzem_algorithms::bsearch(arr, sizeof(arr) / sizeof(arr[0]), 1) == 0);
+	assert(kudzem_algorithms::bsearch(arr3, sizeof(arr3) / sizeof(arr3[0]), 11, kudzem_algorithms::greater) == -1);
+	assert(kudzem_algorithms::bsearch(arr3, sizeof(arr3) / sizeof(arr3[0]), 10, kudzem_algorithms::greater) == 0);
+	assert(kudzem_algorithms::bsearch(arr3, sizeof(arr3) / sizeof(arr3[0]), 5, kudzem_algorithms::greater) == 5);
+	assert(kudzem_algorithms::bsearch(arr3, sizeof(arr3) / sizeof(arr3[0]), 1, kudzem_algorithms::greater) == 9);
 
-	std::cout << kudzem_algorithms::bsearch(arr3, sizeof(arr3)/sizeof(arr3[0]), 1) << std::endl;
+	std::cout << kudzem_algorithms::bsearch(arr3, sizeof(arr3)/sizeof(arr3[0]), 1, kudzem_algorithms::greater) << std::endl;
 	return 0;
 }

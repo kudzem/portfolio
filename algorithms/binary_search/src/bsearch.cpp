@@ -2,15 +2,18 @@
 
 namespace kudzem_algorithms
 {
-	int bsearch(int* arr, size_t arr_size, int key) {
+	bool less(const int a, const int b) {
+		return a < b;
+	}
+
+	bool greater(const int a, const int b) {
+		return a > b;
+	}
+
+	int bsearch(int* arr, size_t arr_size, int key, bool (*cmp)(int, int)) {
 
 		size_t left = 0;
 		size_t right = arr_size - 1;
-		//0 9 4
-		//4 9 6
-		//6 9 8
-		//8 9 8
-		//8 9 8
 
 		while (true) {
 			size_t middle = (left + right) / 2;
@@ -24,7 +27,7 @@ namespace kudzem_algorithms
 			    break;
 			}
 
-			key < arr[middle] ? right = middle : left = middle;
+			cmp(key, arr[middle]) ? right = middle : left = middle;
 		}
 		return -1;
 	}
