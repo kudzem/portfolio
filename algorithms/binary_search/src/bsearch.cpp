@@ -10,24 +10,24 @@ namespace kudzem_algorithms
 		return a > b;
 	}
 
-	int bsearch(int* arr, size_t arr_size, int key, bool (*cmp)(int, int)) {
+	int bsearch(int* arr, size_t arr_size, int* key, bool (*cmp)(int, int)) {
 
 		size_t left = 0;
 		size_t right = arr_size - 1;
 
 		while (true) {
 			size_t middle = (left + right) / 2;
-			if (arr[middle] == key) {
+			if (arr[middle] == *key) {
 				return middle;
 			}
 			else if (left + 1 == right) {
-				if (arr[right] == key) {
+				if (arr[right] == *key) {
 					return right;
 				}
 			    break;
 			}
 
-			cmp(key, arr[middle]) ? right = middle : left = middle;
+			cmp(*key, arr[middle]) ? right = middle : left = middle;
 		}
 		return -1;
 	}
