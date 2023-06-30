@@ -16,12 +16,16 @@ namespace kudzem_games {
 	void game::launch() {
 		std::cout << "Launch game" << std::endl;
 		configure();
-		std::thread vt(&game::visualize, this);
-		vt.detach();
 		std::thread timer_thread(&game::timer, this, 1000);
 		timer_thread.detach();
-		interaction();
-		logic();
-	}
 
+		std::thread logic_thread(&game::logic, this);
+		logic_thread.detach();
+		//logic();
+
+		std::thread visual_thread(&game::visualize, this);
+		visual_thread.detach();
+
+		interaction();
+	}
 }

@@ -1,7 +1,7 @@
 #include "tetris.h"
 #include <iostream>
 #include <thread>
-
+#include <conio.h>
 
 using namespace std::chrono_literals;
 
@@ -23,6 +23,18 @@ namespace kudzem_games {
 
 	void tetris::interaction() {
 		std::cout << "interaction" << std::endl;
+		while (!_stop) {
+			if (kbhit() != 0) {
+				char c = getch();
+				std::unique_lock lk(_event_queue_mx);
+				_event_queue.push(tetris_event::MOVE_DOWN);
+				std::cout << "Send event=" << c << std::endl;
+				_event_queue_cv.notify_one();
+				lk.unlock();
+			}
+			std::this_thread::sleep_for(10ms);
+			//std::cout << "Check keyboard" << std::endl;
+		};
 		return;
 	}
 
