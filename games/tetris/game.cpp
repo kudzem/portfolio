@@ -18,9 +18,10 @@ namespace kudzem_games {
 		configure();
 		std::thread vt(&game::visualize, this);
 		vt.detach();
+		std::thread timer_thread(&game::timer, this, 1000);
+		timer_thread.detach();
 		interaction();
 		logic();
-
 	}
 
 }

@@ -23,6 +23,7 @@ public:
 	virtual void visualize() = 0;
 	virtual void interaction() = 0;
 	virtual void logic() = 0;
+	virtual void timer(int start_value) = 0;
 	void stop() {
 		_stop = true;
 	}

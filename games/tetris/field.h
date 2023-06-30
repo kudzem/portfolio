@@ -11,6 +11,7 @@ namespace kudzem_games {
 	class field {
 		vector<vector<char>> hard_cells;
 		vector<vector<char>> moving_cells;
+		vector<vector<char>> all_cells;
 		static const unsigned border_width = 0;
 		size_t _board_width;
 		size_t _board_height;
@@ -23,6 +24,12 @@ namespace kudzem_games {
 
 			hard_cells.resize(_board_height);
 			moving_cells.resize(_board_height);
+			all_cells.resize(_board_height);
+
+			for (auto& column : all_cells) {
+				column.resize(_board_width);
+				std::fill(column.begin(), column.end(), false);
+			}
 
 			for (auto& column : hard_cells) {
 				column.resize(_board_width);
@@ -46,6 +53,12 @@ namespace kudzem_games {
 
 		void draw_figure(shared_ptr<kudzem_games::figure> f) {
 
+			for (int l = 0; l < _board_height; ++l) {
+				for (int c = 0; c < _board_width; ++c) {
+					moving_cells[l][c] = ' ';
+				}
+			}
+
 			for (int l = 0; l < f->get_size(); ++l) {
 				for (int c = 0; c < f->get_size(); ++c) {
 					//std::cout << l << "/" << c << std::endl;
@@ -56,18 +69,27 @@ namespace kudzem_games {
 		}
 
 		void render_sceen() {
+
+			for (int l = 0; l < _board_height; ++l) {
+				for (int c = 0; c < _board_width; ++c) {
+					all_cells[l][c] = ' ';
+				}
+			}
+
 			for (int l = 0; l < _board_height; ++l) {
 				for (int c = 0; c < _board_width; ++c) {
 					if (moving_cells[l][c]) {
-						std::cout << moving_cells[l][c];
+						all_cells[l][c] = moving_cells[l][c];
 					}
-					else if (hard_cells[l][c]) {
-						std::cout << hard_cells[l][c];
+					else {
+						all_cells[l][c] = hard_cells[l][c];
 					}
-					else
-					{
-						std::cout << ' ';
-					}
+				}
+			}
+
+			for (int l = 0; l < _board_height; ++l) {
+				for (int c = 0; c < _board_width; ++c) {
+					std::cout << all_cells[l][c];
 				}
 				std::cout << endl;
 			}
