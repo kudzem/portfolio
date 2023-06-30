@@ -17,7 +17,7 @@ namespace kudzem_games {
 		std::cout << "Launch game" << std::endl;
 		configure();
 		std::thread vt(&game::visualize, this);
-		vt.join();
+		vt.detach();
 		interaction();
 		logic();
 

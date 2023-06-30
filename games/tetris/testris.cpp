@@ -1,6 +1,7 @@
 #include "tetris.h"
 #include <iostream>
 #include <thread>
+#include <memory>
 
 using namespace std::chrono_literals;
 
@@ -18,12 +19,16 @@ namespace kudzem_games {
 		system("clear");
 #endif
 	}
+	;
 
 	void tetris::visualize() {
+		board = std::make_shared<field>(std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_width(),
+			                            std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_height());
 		std::cout << "visualize" << std::endl;
-		while (true) {
+		while (!_stop) {
 			kudzem_games::Clear();
 			std::cout << "game goes on" << std::endl;
+			board->draw();
 			std::this_thread::sleep_for(100ms);
 		};
 

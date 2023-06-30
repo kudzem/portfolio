@@ -13,9 +13,9 @@ public:
 };
 
 class game {
-private:
-	std::shared_ptr<game_config> cfg = nullptr;
 protected:
+	bool _stop = false;
+	std::shared_ptr<game_config> cfg = nullptr;
 	std::shared_ptr<game_config> get_cfg() { return cfg; }
 public:
 	virtual std::shared_ptr<game_config> init_cfg() = 0;
@@ -23,6 +23,9 @@ public:
 	virtual void visualize() = 0;
 	virtual void interaction() = 0;
 	virtual void logic() = 0;
+	void stop() {
+		_stop = true;
+	}
 
 	void launch();
 
