@@ -25,10 +25,13 @@ namespace kudzem_games {
 		board = std::make_shared<field>(std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_width(),
 			                            std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_height());
 		std::cout << "visualize" << std::endl;
+		auto fg = std::make_shared<figure_t>();
+		fg->set_pos(5, 0);
 		while (!_stop) {
 			kudzem_games::Clear();
 			std::cout << "game goes on" << std::endl;
-			board->draw();
+			board->draw_figure(fg);
+			board->render_sceen();
 			std::this_thread::sleep_for(100ms);
 		};
 
