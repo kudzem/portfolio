@@ -64,9 +64,23 @@ namespace kudzem_games {
 			_event_queue.pop();
 
 			std::unique_lock lk2(_current_figure_mx);
-			if (event == tetris_event::MOVE_DOWN) {
+	
+			if (event == tetris_event::MOVE_DOWN && _current_figure)
+			{
 				std::cout << "Shift figure down" <<std::endl;
 				_current_figure->shift_down();
+			}
+			else if (event == tetris_event::TOUCH_DOWN)
+			{
+				std::cout << "Shift figure down" << std::endl;
+				_current_figure = make_shared<figure_t>();
+				_current_figure->set_pos(5, 0);
+			}
+			else if (event == tetris_event::BOARD_FULL)
+			{
+				std::cout << "Board full" << std::endl;
+				stop();
+				continue;
 			}
 			std::cout << "Notify update" << std::endl;
 			this->_current_figure_changed = true;
@@ -86,8 +100,36 @@ namespace kudzem_games {
 			std::unique_lock lk(_current_figure_mx);
 			_current_figure_cv.wait(lk, [this] { return _current_figure_changed == true; });
 			kudzem_games::Clear();
+			if (_current_figure == nullptr) {
+				std::cout << "Figure is empty" << std::endl;
+				continue;
+			}
 			board->draw_figure(_current_figure);
 			board->render_sceen();
+
+			if (board->check_if_figure_touched(_current_figure)) {
+
+				if (_current_figure->is_not_moved()) {
+					lk.unlock();
+					std::unique_lock lk2(_event_queue_mx);
+					//std::cout << "Touch happened lock" << std::endl;
+					_event_queue.push(tetris_event::BOARD_FULL);
+					_event_queue_cv.notify_one();
+					lk2.unlock();
+					this->_current_figure_changed = false;
+					return;
+				}
+				std::cout << "Touch happened" << std::endl;
+				board->freeze(_current_figure);
+				_current_figure = nullptr;
+				lk.unlock();
+				std::unique_lock lk2(_event_queue_mx);
+				//std::cout << "Touch happened lock" << std::endl;
+				_event_queue.push(tetris_event::TOUCH_DOWN);
+				_event_queue_cv.notify_one();
+				lk2.unlock();
+				//std::cout << "Touch happened unlock" << std::endl;
+			}
 			this->_current_figure_changed = false;
 		};
 
