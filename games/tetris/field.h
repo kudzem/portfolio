@@ -16,11 +16,17 @@ namespace kudzem_games {
 		size_t _board_width;
 		size_t _board_height;
 
+		std::vector<size_t> lines_to_exploid;
+		vector<char> empty_line;
+
 	public:
 		field(size_t width, size_t height) {
 
-			_board_width = width + 2 * border_width;
-			_board_height = height + 2 * border_width;
+			_board_width = width + border_width;
+			_board_height = height + border_width;
+
+			empty_line.resize(_board_width);
+			std::fill(empty_line.begin(), empty_line.end(), ' ');
 
 			hard_cells.resize(_board_height);
 			moving_cells.resize(_board_height);
@@ -28,7 +34,7 @@ namespace kudzem_games {
 
 			for (auto& column : all_cells) {
 				column.resize(_board_width);
-				std::fill(column.begin(), column.end(), false);
+				std::fill(column.begin(), column.end(), ' ');
 			}
 
 			for (auto& column : hard_cells) {
@@ -38,16 +44,7 @@ namespace kudzem_games {
 
 			for (auto& column : moving_cells) {
 				column.resize(_board_width);
-				std::fill(column.begin(), column.end(), false);
-			}
-		}
-
-		void draw_hard_cells() {
-			for (const auto& line : hard_cells) {
-				for (const auto& cell : line) {
-					std::cout << cell;
-				}
-				std::cout << std::endl;
+				std::fill(column.begin(), column.end(), ' ');
 			}
 		}
 
@@ -59,37 +56,23 @@ namespace kudzem_games {
 				}
 			}
 
-			for (int l = 0; l < f->get_size(); ++l) {
-				for (int c = 0; c < f->get_size(); ++c) {
-					if (f->_mtx[0][l][c] != 'x') continue;
+			for (int l = 0; l < f->get_height(); ++l) {
+				for (int c = 0; c < f->get_width(); ++c) {
+					if (f->get_cells()[l][c] != 'x') continue;
 					//std::cout << l << "/" << c << std::endl;
 					//std::cout << "X=" << l + f->get_x() << std::endl;
-					std::cout << l + f->get_y() << "/" << c + f->get_x() << std::endl;
-					moving_cells[l+f->get_y()][c+f->get_x()] = f->_mtx[0][l][c];
+					//std::cout << l + f->get_y() << "/" << c + f->get_x() << std::endl;
+					moving_cells[l+f->get_y()][c+f->get_x()] = f->get_cells()[l][c];
 				}
 			}
 		}
 
 		bool check_if_figure_touched(shared_ptr<kudzem_games::figure> f)
 		{
-			for (size_t c = 0; c < f->get_size(); ++c) {
-				for (int l = f->get_size() - 1; l >= 0; --l) {
+			for (size_t c = 0; c < f->get_width(); ++c) {
+				for (int l = f->get_height() - 1; l >= 0; --l) {
 					//std::cout << l << "/" << c << std::endl;
-					if (f->_mtx[0][l][c] == 'x') {
-						if (l + f->get_y() == _board_height - 1) return true;
-						if (hard_cells[1 + l + f->get_y()][c + f->get_x()] == 'x') return true;
-					}
-				}
-			}
-			return false;
-		}
-
-		bool check_board_full(shared_ptr<kudzem_games::figure> f)
-		{
-			for (size_t c = 0; c < f->get_size(); ++c) {
-				for (int l = f->get_size() - 1; l >= 0; --l) {
-					//std::cout << l << "/" << c << std::endl;
-					if (f->_mtx[0][l][c] == 'x') {
+					if (f->get_cells()[l][c] == 'x') {
 						if (l + f->get_y() == _board_height - 1) return true;
 						if (hard_cells[1 + l + f->get_y()][c + f->get_x()] == 'x') return true;
 					}
@@ -100,16 +83,50 @@ namespace kudzem_games {
 
 		void freeze(shared_ptr<kudzem_games::figure> f)
 		{
-			for (int l = 0; l < f->get_size(); ++l) {
-				for (int c = 0; c < f->get_size(); ++c) {
-					if (f->_mtx[0][l][c] == 'x') {
+			for (int l = 0; l < f->get_height(); ++l) {
+				for (int c = 0; c < f->get_width(); ++c) {
+					if (f->get_cells()[l][c] == 'x') {
 						//std::cout << l << "/" << c << std::endl;
 						//std::cout << "X=" << l + f->get_x() << std::endl;
-						hard_cells[l + f->get_y()][c + f->get_x()] = f->_mtx[0][l][c];
+						hard_cells[l + f->get_y()][c + f->get_x()] = f->get_cells()[l][c];
 					}
 				}
 			}
 		}
+
+		void exploid()
+		{
+			for (int l = _board_height - 1; l >= 0; --l) {
+				int cell_count = 0;
+				for (int c = 0; c < _board_width; ++c) {
+					if (hard_cells[l][c] != 'x') break;
+					if (++cell_count == _board_width)
+						lines_to_exploid.push_back(l);
+				}
+			}
+
+			if (lines_to_exploid.empty()) return;
+
+			vector<vector<char>> hard_cells_new;
+			hard_cells_new.resize(_board_height);
+
+			for (int i = 0; i < lines_to_exploid.size(); ++i) {
+				std::cout << "Added a new line" << std::endl;
+				hard_cells_new[i] = empty_line;
+			}
+
+			for (int l = _board_height - 1, l_new = _board_height - 1; l >= 0; --l) {
+				if (std::find(lines_to_exploid.begin(), lines_to_exploid.end(), l) == lines_to_exploid.end()) {
+					std::cout << "Copy line " << l << std::endl;
+					hard_cells_new[l_new--] = hard_cells[l];
+				}
+			}
+
+			hard_cells = hard_cells_new;
+
+			lines_to_exploid.clear();
+		}
+
 
 		void render_sceen() {
 
@@ -130,9 +147,14 @@ namespace kudzem_games {
 				}
 			}
 
-			for (int l = 0; l < _board_height; ++l) {
-				for (int c = 0; c < _board_width; ++c) {
-					std::cout << all_cells[l][c];
+			for (int l = 0; l < _board_height + 1; ++l) {
+				for (int c = 0; c < _board_width + 1; ++c) {
+					if (l == _board_height || c == _board_width) {
+					    std:cout << "#";
+					}
+					else {
+						std::cout << all_cells[l][c];
+					}
 				}
 				std::cout << endl;
 			}

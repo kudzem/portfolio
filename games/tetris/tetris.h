@@ -15,7 +15,8 @@ namespace kudzem_games {
 		MOVE_RIGHT,
 		ROTATE,
 		TOUCH_DOWN,
-		BOARD_FULL
+		BOARD_FULL,
+		UNKNOWN_KEY_PRESSED
 	};
 
 	class tetris_cfg : public game_config {
