@@ -16,6 +16,7 @@ namespace kudzem_games {
 		ROTATE,
 		TOUCH_DOWN,
 		BOARD_FULL,
+		PAUSE,
 		UNKNOWN_KEY_PRESSED
 	};
 
@@ -43,10 +44,12 @@ namespace kudzem_games {
 		std::mutex _event_queue_mx;
 		std::condition_variable _event_queue_cv;
 
-		std::shared_ptr<figure_t> _current_figure;
+		std::shared_ptr<figure> _current_figure;
 		std::mutex _current_figure_mx;
 		std::condition_variable _current_figure_cv;
 		bool _current_figure_changed = false;
+
+		size_t figure_counter = 0;
 
 	public:
 		virtual std::shared_ptr<game_config> init_cfg() override { return std::make_shared<tetris_cfg>(); }
@@ -54,6 +57,7 @@ namespace kudzem_games {
 		virtual void interaction() override;
 		virtual void logic() override;
 		virtual void timer(int start_value) override;
+		std::shared_ptr<figure> generate_figure();
 	};
 
 }

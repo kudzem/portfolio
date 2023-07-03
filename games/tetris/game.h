@@ -15,6 +15,7 @@ public:
 class game {
 protected:
 	bool _stop = false;
+	bool _paused = false;
 	std::shared_ptr<game_config> cfg = nullptr;
 	std::shared_ptr<game_config> get_cfg() { return cfg; }
 public:
@@ -26,6 +27,10 @@ public:
 	virtual void timer(int start_value) = 0;
 	void stop() {
 		_stop = true;
+	}
+
+	void pause() {
+		_paused = !_paused;
 	}
 
 	void launch();

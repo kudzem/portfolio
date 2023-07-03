@@ -21,7 +21,6 @@ namespace kudzem_games {
 
 		std::thread logic_thread(&game::logic, this);
 		logic_thread.detach();
-		//logic();
 
 		std::thread visual_thread(&game::visualize, this);
 		visual_thread.detach();

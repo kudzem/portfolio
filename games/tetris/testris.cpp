@@ -7,6 +7,7 @@ using namespace std::chrono_literals;
 
 namespace kudzem_games {
 
+	const size_t number_of_tetris_figures = 7;
 	void Clear()
 	{
 #if defined _WIN32
@@ -41,6 +42,9 @@ namespace kudzem_games {
 					return tetris_event::MOVE_DOWN;
 				}
 			}
+			else if (key == 27) {
+				return tetris_event::PAUSE;
+			}
 		}
 		return tetris_event::UNKNOWN_KEY_PRESSED;
 	}
@@ -53,7 +57,9 @@ namespace kudzem_games {
 				//char c = getch();
 				auto key_event = CheckKey();
 
-				if (key_event != tetris_event::UNKNOWN_KEY_PRESSED) {
+				if (key_event != tetris_event::UNKNOWN_KEY_PRESSED &&
+					(_paused && key_event == tetris_event::PAUSE ||
+				     !_paused)) {
 					std::unique_lock lk(_event_queue_mx);
 					_event_queue.push(key_event);
 					//std::cout << "Send event=" << c << std::endl;
@@ -70,10 +76,15 @@ namespace kudzem_games {
 		size_t counter = 0;
 		const size_t level_upgrade_counter = 10;
 		while (!_stop) {
-			std::unique_lock lk(_event_queue_mx);
-			_event_queue.push(tetris_event::MOVE_DOWN);
-			_event_queue_cv.notify_one();
-			lk.unlock();
+
+			if (!_paused) 
+			{
+				std::unique_lock lk(_event_queue_mx);
+				_event_queue.push(tetris_event::MOVE_DOWN);
+				_event_queue_cv.notify_one();
+				lk.unlock();
+			}
+
 			std::this_thread::sleep_for(1000ms);
 		};
 		return;
@@ -81,8 +92,7 @@ namespace kudzem_games {
 
 	void tetris::logic() {
 		std::cout << "logic" << std::endl;
-		_current_figure = make_shared<figure_t>();
-		_current_figure->set_pos(5, 0);
+		_current_figure = generate_figure();
 		while (!_stop) {
 			std::unique_lock lk(_event_queue_mx);
 			_event_queue_cv.wait(lk, [this] { return _event_queue.empty() == false; });
@@ -92,9 +102,14 @@ namespace kudzem_games {
 
 			std::unique_lock lk2(_current_figure_mx);
 
-			if (event == tetris_event::ROTATE)
+			if (event == tetris_event::PAUSE)
 			{
-				std::cout << "ROTATE" << std::endl;
+				//std::cout << "PAUSE" << std::endl;
+				pause();
+			}
+			else if (event == tetris_event::ROTATE)
+			{
+				//std::cout << "ROTATE" << std::endl;
 				_current_figure->rotate();
 			}
 			else if (event == tetris_event::MOVE_LEFT)
@@ -112,9 +127,8 @@ namespace kudzem_games {
 			}
 			else if (event == tetris_event::TOUCH_DOWN)
 			{
-				//std::cout << "Shift figure down" << std::endl;
-				_current_figure = make_shared<figure_t>();
-				_current_figure->set_pos(5, 0);
+				//std::cout << "Touch down" << std::endl;
+				_current_figure = generate_figure();
 			}
 			else if (event == tetris_event::BOARD_FULL)
 			{
@@ -129,6 +143,29 @@ namespace kudzem_games {
 		};
 
 		return;
+	}
+
+	std::shared_ptr<figure> 
+	tetris::generate_figure() {
+
+		auto idx = figure_counter++ % number_of_tetris_figures;
+
+		switch (idx) {
+		case 0:
+			return make_shared<figure_i>();
+		case 1:
+			return make_shared<figure_t>();
+		case 2:
+			return make_shared<figure_o>();
+		case 3:
+			return make_shared<figure_s>();
+		case 4:
+			return make_shared<figure_z>();
+		case 5:
+			return make_shared<figure_j>();
+		case 6:
+			return make_shared<figure_l>();
+		};
 	}
 
 	void tetris::visualize() {
@@ -176,6 +213,9 @@ namespace kudzem_games {
 				//std::cout << "Touch happened unlock" << std::endl;
 			}
 			this->_current_figure_changed = false;
+			if (_paused) {
+				std::cout << "Pause" << std::endl;
+			}
 		};
 
 		return;

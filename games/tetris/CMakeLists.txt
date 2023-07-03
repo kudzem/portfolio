@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.10])
+SET(CMAKE_CONFIGURATION_TYPES "Release" CACHE STRING "" FORCE)
 project(testris)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 add_executable(testris "testris.cpp" "game.cpp" "tetris.h" "game.h" "main.cpp" "field.h" "figure.h")
