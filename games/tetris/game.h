@@ -14,6 +14,7 @@ public:
 
 class game {
 protected:
+	unsigned long _score = 0;
 	bool _stop = false;
 	bool _paused = false;
 	std::shared_ptr<game_config> cfg = nullptr;

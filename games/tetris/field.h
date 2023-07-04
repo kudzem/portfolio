@@ -16,7 +16,6 @@ namespace kudzem_games {
 		size_t _board_width;
 		size_t _board_height;
 
-		std::vector<size_t> lines_to_exploid;
 		vector<char> empty_line;
 
 	public:
@@ -94,8 +93,10 @@ namespace kudzem_games {
 			}
 		}
 
-		void exploid()
+		size_t exploid()
 		{
+			std::vector<size_t> lines_to_exploid;
+
 			for (int l = _board_height - 1; l >= 0; --l) {
 				int cell_count = 0;
 				for (int c = 0; c < _board_width; ++c) {
@@ -105,7 +106,7 @@ namespace kudzem_games {
 				}
 			}
 
-			if (lines_to_exploid.empty()) return;
+			if (lines_to_exploid.empty()) return 0;
 
 			vector<vector<char>> hard_cells_new;
 			hard_cells_new.resize(_board_height);
@@ -124,7 +125,8 @@ namespace kudzem_games {
 
 			hard_cells = hard_cells_new;
 
-			lines_to_exploid.clear();
+
+			return lines_to_exploid.size();
 		}
 
 
