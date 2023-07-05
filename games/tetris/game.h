@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 
+#include <string>
+
 namespace kudzem_games {
 
 class game_config {
@@ -15,10 +17,17 @@ public:
 class game {
 protected:
 	unsigned long _score = 0;
+	unsigned long _record = 0;
 	bool _stop = false;
 	bool _paused = false;
 	std::shared_ptr<game_config> cfg = nullptr;
 	std::shared_ptr<game_config> get_cfg() { return cfg; }
+
+	void save_record();
+	void read_record();
+
+private:
+
 public:
 	virtual std::shared_ptr<game_config> init_cfg() = 0;
 	void configure();

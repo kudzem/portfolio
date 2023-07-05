@@ -133,6 +133,7 @@ namespace kudzem_games {
 			else if (event == tetris_event::BOARD_FULL)
 			{
 				std::cout << "Game over" << std::endl;
+				save_record();
 				stop();
 				continue;
 			}
@@ -215,6 +216,7 @@ namespace kudzem_games {
 			}
 			this->_current_figure_changed = false;
 			std::cout << "Score: " << _score << std::endl;
+			std::cout << "Record: " << _record << std::endl;
 			if (_paused) {
 				std::cout << "Pause" << std::endl;
 			}
