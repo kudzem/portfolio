@@ -58,6 +58,8 @@ namespace kudzem_games {
 		virtual void logic() override;
 		virtual void timer(int start_value) override;
 		std::shared_ptr<figure> generate_figure();
+		size_t generate_figure_idx_randomly();
+		size_t generate_figure_idx_seqly();
 		void increase_score(size_t n_of_exploided_lines);
 	};
 

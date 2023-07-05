@@ -2,6 +2,7 @@
 #include <iostream>
 #include <thread>
 #include <conio.h>
+#include <cstdlib>
 
 using namespace std::chrono_literals;
 
@@ -146,11 +147,27 @@ namespace kudzem_games {
 		return;
 	}
 
-	std::shared_ptr<figure> 
+	size_t 
+	tetris::generate_figure_idx_seqly() {
+
+		auto idx = figure_counter % number_of_tetris_figures;
+		return idx;
+
+	}
+
+	size_t
+	tetris::generate_figure_idx_randomly() {
+
+		auto idx = rand() % number_of_tetris_figures;
+		return idx;
+	}
+
+	std::shared_ptr<figure>
 	tetris::generate_figure() {
 
-		auto idx = figure_counter++ % number_of_tetris_figures;
+		auto idx = generate_figure_idx_randomly();
 
+		++figure_counter;
 		switch (idx) {
 		case 0:
 			return make_shared<figure_i>();
@@ -217,6 +234,8 @@ namespace kudzem_games {
 			this->_current_figure_changed = false;
 			std::cout << "Score: " << _score << std::endl;
 			std::cout << "Record: " << _record << std::endl;
+			std::cout << "Figures: " << figure_counter << std::endl;
+			std::cout << "Efficiency: " << _score/figure_counter << std::endl;
 			if (_paused) {
 				std::cout << "Pause" << std::endl;
 			}
