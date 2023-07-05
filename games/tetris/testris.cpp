@@ -199,7 +199,8 @@ namespace kudzem_games {
 				}
 				//std::cout << "Touch happened" << std::endl;
 				board->freeze(_current_figure);
-				_score += 100*board->exploid();
+
+				increase_score(board->exploid());
 				_current_figure = nullptr;
 				lk.unlock();
 				std::unique_lock lk2(_event_queue_mx);
@@ -222,6 +223,9 @@ namespace kudzem_games {
 		return;
 	}
 
+	void tetris::increase_score(size_t n_of_exploided_lines) {
+		_score += 100 * (pow(2, n_of_exploided_lines) - 1);
+	}
 
 	void tetris_cfg::set_default() {
 		std::cout << "Set default game settings" << std::endl;
@@ -237,6 +241,5 @@ namespace kudzem_games {
 		//std::cin >> _difficulty;
 		return;
 	}
-
 
 }
