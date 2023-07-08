@@ -108,7 +108,7 @@ public:
 	void rotate() { _angle = ++_angle % 4; update_figure_size(); update_figure_pos(); }
 	void shift_left() { if (_pos_x > 0) --_pos_x; }
 	void shift_right() { if(_pos_x + get_width() < 10) ++_pos_x; }
-	void shift_down() { ++_pos_y; }
+	void shift_down() { if (_pos_y + get_height() < 20) ++_pos_y; }
 	void set_pos(size_t x, size_t y) { _pos_x = x; _pos_y = y; }
 };
 

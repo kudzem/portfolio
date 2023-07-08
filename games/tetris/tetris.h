@@ -49,8 +49,6 @@ namespace kudzem_games {
 		std::condition_variable _current_figure_cv;
 		bool _current_figure_changed = false;
 
-		size_t figure_counter = 0;
-
 	public:
 		virtual std::shared_ptr<game_config> init_cfg() override { return std::make_shared<tetris_cfg>(); }
 		virtual void visualize() override;
@@ -61,6 +59,7 @@ namespace kudzem_games {
 		size_t generate_figure_idx_randomly();
 		size_t generate_figure_idx_seqly();
 		void increase_score(size_t n_of_exploided_lines);
+		void print_stats() const;
 	};
 
 }

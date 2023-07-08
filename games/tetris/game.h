@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-
+#include <mutex>
 #include <string>
 
 namespace kudzem_games {
@@ -16,12 +16,18 @@ public:
 
 class game {
 protected:
+	std::mutex _game_mtx;
 	unsigned long _score = 0;
 	unsigned long _record = 0;
 	bool _stop = false;
 	bool _paused = false;
 	std::shared_ptr<game_config> cfg = nullptr;
 	std::shared_ptr<game_config> get_cfg() { return cfg; }
+
+	unsigned _timer_interval_ms = 1000;
+	unsigned _number_of_generated_obj = 0;
+	unsigned _level = 0;
+	unsigned _level_upgrade_counter = 10;
 
 	void save_record();
 	void read_record();
@@ -42,6 +48,8 @@ public:
 	void pause() {
 		_paused = !_paused;
 	}
+
+	void upgrade_level();
 
 	void launch();
 

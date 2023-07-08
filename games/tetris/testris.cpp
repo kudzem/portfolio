@@ -74,8 +74,7 @@ namespace kudzem_games {
 
 	void tetris::timer(int start_value) {
 		std::cout << "Timer" << std::endl;
-		size_t counter = 0;
-		const size_t level_upgrade_counter = 10;
+
 		while (!_stop) {
 
 			if (!_paused) 
@@ -86,7 +85,7 @@ namespace kudzem_games {
 				lk.unlock();
 			}
 
-			std::this_thread::sleep_for(1000ms);
+			std::this_thread::sleep_for(std::chrono::milliseconds(_timer_interval_ms));
 		};
 		return;
 	}
@@ -130,6 +129,7 @@ namespace kudzem_games {
 			{
 				//std::cout << "Touch down" << std::endl;
 				_current_figure = generate_figure();
+				upgrade_level();
 			}
 			else if (event == tetris_event::BOARD_FULL)
 			{
@@ -150,7 +150,7 @@ namespace kudzem_games {
 	size_t 
 	tetris::generate_figure_idx_seqly() {
 
-		auto idx = figure_counter % number_of_tetris_figures;
+		auto idx = _number_of_generated_obj % number_of_tetris_figures;
 		return idx;
 
 	}
@@ -167,7 +167,7 @@ namespace kudzem_games {
 
 		auto idx = generate_figure_idx_randomly();
 
-		++figure_counter;
+		++_number_of_generated_obj;
 		switch (idx) {
 		case 0:
 			return make_shared<figure_i>();
@@ -231,18 +231,28 @@ namespace kudzem_games {
 				lk2.unlock();
 				//std::cout << "Touch happened unlock" << std::endl;
 			}
-			this->_current_figure_changed = false;
-			std::cout << "Score: " << _score << std::endl;
-			std::cout << "Record: " << _record << std::endl;
-			std::cout << "Figures: " << figure_counter << std::endl;
-			std::cout << "Efficiency: " << _score/figure_counter << std::endl;
-			if (_paused) {
-				std::cout << "Pause" << std::endl;
-			}
+			else lk.unlock();
+
+			std::unique_lock lk3(_game_mtx);
+			_current_figure_changed = false;
+			print_stats();
 		};
 
 		return;
 	}
+
+	void tetris::print_stats() const {
+
+		std::cout << "Level: " << _level << std::endl;
+		std::cout << "Score: " << _score << std::endl;
+		std::cout << "Record: " << _record << std::endl;
+		std::cout << "Figures: " << _number_of_generated_obj << std::endl;
+		std::cout << "Efficiency: " << _score / _number_of_generated_obj << std::endl;
+		if (_paused) {
+			std::cout << "Pause" << std::endl;
+		}
+	}
+
 
 	void tetris::increase_score(size_t n_of_exploided_lines) {
 		_score += 100 * (pow(2, n_of_exploided_lines) - 1);

@@ -33,6 +33,16 @@ namespace kudzem_games {
 		interaction();
 	}
 
+	void game::upgrade_level()
+	{
+		std::unique_lock lk(_game_mtx);
+		if (_number_of_generated_obj % _level_upgrade_counter == 0 &&
+			_timer_interval_ms > 100) {
+			_timer_interval_ms -= 100;
+			++_level;
+		}
+	}
+
 	void game::read_record()
 	{
 		std::filesystem::path record_file_path = std::filesystem::current_path() / "record.txt";
