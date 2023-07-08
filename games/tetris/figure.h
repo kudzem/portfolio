@@ -18,42 +18,52 @@ namespace kudzem_games {
 		Z
 	};
 
+	const char fs = 'X';
+	const char fso = 'O';
+	const char fsi = 'I';
+	const char fst = 'T';
+	const char fsz = 'Z';
+	const char fss = 'S';
+	const char fsj = 'J';
+	const char fsl = 'L';
+	const char es = ' ';
+
 typedef std::vector<std::vector<std::vector<char>>> figure_cells;
 
-const figure_cells figure_t_matrix = { {{' ','x',' '}, {'x','x','x'}},
-									   {{'x',' '}, {'x','x'}, {'x',' '}},
-	                                   {{'x','x','x'}, {' ','x',' '}},
-									   {{' ','x'}, {'x','x'}, {' ','x'}} };
+const figure_cells figure_t_matrix = { {{es,fst,es}, {fst,fst,fst}},
+									   {{fst,es}, {fst,fst}, {fst,es}},
+	                                   {{fst,fst,fst}, {es,fst,es}},
+									   {{es,fst}, {fst,fst}, {es,fst}} };
 
-const figure_cells figure_i_matrix = { {{'x','x','x','x'}},
-									   {{'x'},{'x'},{'x'},{'x'}},
-									   {{'x','x','x','x'}},
-									   {{'x'},{'x'},{'x'},{'x'}} };
+const figure_cells figure_i_matrix = { {{fsi,fsi,fsi,fsi}},
+									   {{fsi},{fsi},{fsi},{fsi}},
+									   {{fsi,fsi,fsi,fsi}},
+									   {{fsi},{fsi},{fsi},{fsi}} };
 
-const figure_cells figure_o_matrix = { {{'x','x'},{'x','x'}},
-									   {{'x','x'},{'x','x'}},
-									   {{'x','x'},{'x','x'}},
-									   {{'x','x'},{'x','x'}} };
+const figure_cells figure_o_matrix = { {{fso,fso},{fso,fso}},
+									   {{fso,fso},{fso,fso}},
+									   {{fso,fso},{fso,fso}},
+									   {{fso,fso},{fso,fso}} };
 
-const figure_cells figure_s_matrix = { {{' ','x','x'},{'x','x',' '}},
-									   {{'x',' '},{'x','x'},{' ','x'}},
-									   {{' ','x','x'},{'x','x',' '}},
-									   {{'x',' '},{'x','x'},{' ','x'}} };
+const figure_cells figure_s_matrix = { {{es,fss,fss},{fss,fss,es}},
+									   {{fss,es},{fss,fss},{es,fss}},
+									   {{es,fss,fss},{fss,fss,es}},
+									   {{fss,es},{fss,fss},{es,fss}} };
 
-const figure_cells figure_z_matrix = { {{'x','x',' '},{' ','x','x'}},
-									   {{' ','x'},{'x','x'},{'x',' '}},
-									   {{'x','x',' '},{' ','x','x'}},
-									   {{' ','x'},{'x','x'},{'x',' '}} };
+const figure_cells figure_z_matrix = { {{fsz,fsz,es},{es,fsz,fsz}},
+									   {{es,fsz},{fsz,fsz},{fsz,es}},
+									   {{fsz,fsz,es},{es,fsz,fsz}},
+									   {{es,fsz},{fsz,fsz},{fsz,es}} };
 
-const figure_cells figure_l_matrix = { {{' ',' ','x'},{'x','x','x'}},
-									   {{'x',' '},{'x',' '},{'x','x'}},
-									   {{'x','x','x'},{'x',' ',' '}},
-									   {{'x','x'},{' ','x'},{' ','x'}} };
+const figure_cells figure_l_matrix = { {{es,es,fsl},{fsl,fsl,fsl}},
+									   {{fsl,es},{fsl,es},{fsl,fsl}},
+									   {{fsl,fsl,fsl},{fsl,es,es}},
+									   {{fsl,fsl},{es,fsl},{es,fsl}} };
 
-const figure_cells figure_j_matrix = { {{'x','x','x'},{' ',' ','x'}},
-									   {{' ','x'},{' ','x'},{'x','x'}},
-									   {{'x',' ',' '},{'x','x','x'}},
-									   {{'x','x'},{'x',' '},{'x',' '}} };
+const figure_cells figure_j_matrix = { {{fsj,fsj,fsj},{es,es,fsj}},
+									   {{es,fsj},{es,fsj},{fsj,fsj}},
+									   {{fsj,es,es},{fsj,fsj,fsj}},
+									   {{fsj,fsj},{fsj,es},{fsj,es}} };
 class figure {
 protected:
 	size_t _pos_x = 0;
