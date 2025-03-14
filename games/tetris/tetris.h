@@ -44,6 +44,9 @@ namespace kudzem_games {
 		std::mutex _event_queue_mx;
 		std::condition_variable _event_queue_cv;
 
+		std::mutex _render_done_mx;
+		std::condition_variable _render_done_cv;
+
 		std::shared_ptr<figure> _current_figure;
 		std::mutex _current_figure_mx;
 		std::condition_variable _current_figure_cv;

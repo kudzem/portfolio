@@ -110,20 +110,29 @@ namespace kudzem_games {
 			else if (event == tetris_event::ROTATE)
 			{
 				//std::cout << "ROTATE" << std::endl;
+				if (_current_figure)
 				_current_figure->rotate();
+
+				std::unique_lock lk(_render_done_mx);
+					_render_done_cv.wait(lk, [] { return true; });
 			}
 			else if (event == tetris_event::MOVE_LEFT)
 			{
+				if (_current_figure)
 				_current_figure->shift_left();
 			}
 			else if (event == tetris_event::MOVE_RIGHT)
 			{
+				if (_current_figure)
 				_current_figure->shift_right();
 			}
 			else if (event == tetris_event::MOVE_DOWN && _current_figure)
 			{
-				//std::cout << "Shift figure down" <<std::endl;
+				if (_current_figure)
 				_current_figure->shift_down();
+
+				std::unique_lock lk(_render_done_mx);
+				_render_done_cv.wait(lk, [this] { return true; });
 			}
 			else if (event == tetris_event::TOUCH_DOWN)
 			{
@@ -219,8 +228,11 @@ namespace kudzem_games {
 				board->freeze(_current_figure);
 
 				increase_score(board->exploid());
+
+				// this is probably unsafe
 				_current_figure = nullptr;
 				lk.unlock();
+
 				std::unique_lock lk2(_event_queue_mx);
 				//std::cout << "Touch happened lock" << std::endl;
 				while (!_event_queue.empty()) {
@@ -236,6 +248,9 @@ namespace kudzem_games {
 			std::unique_lock lk3(_game_mtx);
 			_current_figure_changed = false;
 			print_stats();
+
+			std::cout << "Render done" << std::endl;
+			_render_done_cv.notify_one();
 		};
 
 		return;
