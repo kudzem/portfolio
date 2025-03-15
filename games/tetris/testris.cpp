@@ -1,7 +1,65 @@
 #include "tetris.h"
 #include <iostream>
 #include <thread>
+#if defined _WIN32
 #include <conio.h>
+#else
+#include <termios.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <cmath>
+bool kbhit() {
+    struct termios oldt, newt;
+    int oldf;
+    char ch;
+    bool oldf2;
+
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
+
+    oldf2 = false;
+    try {
+        if (read(STDIN_FILENO, &ch, 1) == 1) {
+            oldf2 = true;
+        }
+    } catch (...) {
+        oldf2 = false; // In case of any exceptions
+    }
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    fcntl(STDIN_FILENO, F_SETFL, oldf);
+
+    return oldf2;
+}
+
+char getch(void)
+{
+    char buf = 0;
+    struct termios old = {0};
+    fflush(stdout);
+    if(tcgetattr(0, &old) < 0)
+        perror("tcsetattr()");
+    old.c_lflag &= ~ICANON;
+    old.c_lflag &= ~ECHO;
+    old.c_cc[VMIN] = 1;
+    old.c_cc[VTIME] = 0;
+    if(tcsetattr(0, TCSANOW, &old) < 0)
+        perror("tcsetattr ICANON");
+    if(read(0, &buf, 1) < 0)
+        perror("read()");
+    old.c_lflag |= ICANON;
+    old.c_lflag |= ECHO;
+    if(tcsetattr(0, TCSADRAIN, &old) < 0)
+        perror("tcsetattr ~ICANON");
+    printf("%c\n", buf);
+    return buf;
+ }
+
+#endif
 #include <cstdlib>
 
 using namespace std::chrono_literals;
@@ -26,7 +84,10 @@ namespace kudzem_games {
 	tetris_event CheckKey(void) {
 		int key;
 		if (kbhit()) {
+//                        std::cout << "Key press detected" << std::endl;
 			key = getch();
+//                        std::cout << "Key = " << int(key) << std::endl;
+#if defined _WIN32
 			if (key == 224) {
 				do {
 					key = getch();
@@ -35,19 +96,35 @@ namespace kudzem_games {
 				switch (key) {
 				case 72:
 					return tetris_event::ROTATE;
-				case 75:
+                                case 75:
 					return tetris_event::MOVE_LEFT;
-				case 77:
+                                case 77:
 					return tetris_event::MOVE_RIGHT;
-				case 80:
+                                case 80:
 					return tetris_event::MOVE_DOWN;
 				}
 			}
 			else if (key == 27) {
 				return tetris_event::PAUSE;
 			}
-		}
-		return tetris_event::UNKNOWN_KEY_PRESSED;
+
+#elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
+
+                                switch (key) {
+                                case 32:
+                                        return tetris_event::PAUSE;
+                                case 65:
+                                        return tetris_event::ROTATE;
+                                case 68:
+                                        return tetris_event::MOVE_LEFT;
+                                case 67:
+                                        return tetris_event::MOVE_RIGHT;
+                                case 66:
+                                        return tetris_event::MOVE_DOWN;
+                                }
+#endif
+                }
+                return tetris_event::UNKNOWN_KEY_PRESSED;
 	}
 
 	void tetris::interaction() {
@@ -142,6 +219,7 @@ namespace kudzem_games {
 			}
 			else if (event == tetris_event::BOARD_FULL)
 			{
+                                print_stats();
 				std::cout << "Game over" << std::endl;
 				save_record();
 				stop();
