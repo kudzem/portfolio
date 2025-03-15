@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
-
+#include <algorithm>
 #include "figure.h"
 
 using namespace std;

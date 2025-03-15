@@ -5,13 +5,14 @@
 #include <thread>
 #include <future>
 #include <fstream>
-
+#include <string.h>
 #include <filesystem>
 
 
 namespace kudzem_games {
 
 	void game::configure() {
+//                keypad(win, TRUE);
 		std::cout << "configure game" << std::endl;
 		cfg = init_cfg();
 		cfg->apply_user_settings();
