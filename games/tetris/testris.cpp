@@ -274,7 +274,7 @@ namespace kudzem_games {
 	}
 
 	void tetris::visualize() {
-		board = std::make_shared<field>(std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_width(),
+		board = std::make_shared<kudzem_games::board>(std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_width(),
 			std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_height());
 		std::cout << "visualize" << std::endl;
 
@@ -287,10 +287,11 @@ namespace kudzem_games {
 				lk.unlock();
 				continue;
 			}
-			board->draw_figure(_current_figure);
-			board->render_sceen();
+			board->field->draw_figure(_current_figure);
+			board->render();
+			board->show();
 
-			if (board->check_if_figure_touched(_current_figure)) {
+			if (board->field->check_if_figure_touched(_current_figure)) {
 
 				if (_current_figure->is_not_moved()) {
 					lk.unlock();
@@ -303,9 +304,9 @@ namespace kudzem_games {
 					return;
 				}
 				//std::cout << "Touch happened" << std::endl;
-				board->freeze(_current_figure);
+				board->field->freeze(_current_figure);
 
-				increase_score(board->exploid());
+				increase_score(board->field->exploid());
 
 				// this is probably unsafe
 				_current_figure = nullptr;

@@ -129,15 +129,23 @@ namespace kudzem_games {
 			return lines_to_exploid.size();
 		}
 
-
-		void render_sceen() {
-
+		void flush_space() {
 			for (int l = 0; l < _board_height; ++l) {
 				for (int c = 0; c < _board_width; ++c) {
 					all_cells[l][c] = es;
 				}
 			}
+		}
 
+		void clean() {
+			for (int l = 0; l < _board_height; ++l) {
+				for (int c = 0; c < _board_width; ++c) {
+					all_cells[l][c] = es;
+				}
+			}
+		}
+
+        void merge_moving_and_hard_cells() {
 			for (int l = 0; l < _board_height; ++l) {
 				for (int c = 0; c < _board_width; ++c) {
 					if (moving_cells[l][c] != es) {
@@ -148,7 +156,15 @@ namespace kudzem_games {
 					}
 				}
 			}
+		}
 
+		void render() {
+
+			clean();
+			merge_moving_and_hard_cells();
+		}
+
+		void show() {
 			for (int l = 0; l < _board_height + 1; ++l) {
 				for (int c = 0; c < _board_width + 1; ++c) {
 					if (l == _board_height || c == _board_width) {

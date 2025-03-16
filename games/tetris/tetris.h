@@ -1,7 +1,7 @@
 #pragma once
 
 #include "game.h"
-#include "field.h"
+#include "board.h"
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -39,7 +39,7 @@ namespace kudzem_games {
 	class tetris : public game {
 
 	private:
-		shared_ptr<field> board;
+		shared_ptr<board> board;
 		std::queue<tetris_event> _event_queue;
 		std::mutex _event_queue_mx;
 		std::condition_variable _event_queue_cv;
