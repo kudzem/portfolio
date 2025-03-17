@@ -26,6 +26,8 @@ namespace kudzem_games {
 		unsigned _lines;
 		unsigned _figures;
 
+		const char empty_space_filler = space;
+
 	public:
 
 	    info_panel(size_t height) {
@@ -36,7 +38,7 @@ namespace kudzem_games {
 
 			for (auto& column : all_cells) {
 				column.resize(_width);
-				std::fill(column.begin(), column.end(), es);
+				std::fill(column.begin(), column.end(), empty_space_filler);
 			}
 
 			render_topics();
@@ -53,20 +55,20 @@ namespace kudzem_games {
 
 		void set_level(unsigned level)
 		{
-			std::fill(all_cells[2].begin(), all_cells[2].end(), es);
+			std::fill(all_cells[2].begin(), all_cells[2].end(), empty_space_filler);
 			all_cells[2][1] = level%10 + 48;
 		}
 
 		void set_score(unsigned score)
 		{
-			std::fill(all_cells[5].begin(), all_cells[5].end(), es);
+			std::fill(all_cells[5].begin(), all_cells[5].end(), empty_space_filler);
 			auto score_str = std::to_string(score);
 			std::copy(score_str.begin(), score_str.end(), all_cells[5].begin() + 1);
 		}
 
 		void set_figures(unsigned figures)
 		{
-			std::fill(all_cells[8].begin(), all_cells[8].end(), es);
+			std::fill(all_cells[8].begin(), all_cells[8].end(), empty_space_filler);
 			auto score_str = std::to_string(figures);
 			std::copy(score_str.begin(), score_str.end(), all_cells[8].begin() + 1);
 		}
@@ -108,7 +110,6 @@ namespace kudzem_games {
 
 			for (auto& column : all_cells) {
 				column.resize(_board_width);
-				std::fill(column.begin(), column.end(), es);
 			}
 
 			render_border();
