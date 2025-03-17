@@ -48,11 +48,13 @@ namespace kudzem_games {
 		std::condition_variable _render_done_cv;
 
 		std::shared_ptr<figure> _current_figure;
+		std::shared_ptr<figure> _next_figure;
 		std::mutex _current_figure_mx;
 		std::condition_variable _current_figure_cv;
 		bool _current_figure_changed = false;
 
-		size_t n_of_exploided_lines = 0;
+		size_t n_of_clear = 0;
+		size_t n_of_tetris_clear = 0;
 
 	public:
 		virtual std::shared_ptr<game_config> init_cfg() override { return std::make_shared<tetris_cfg>(); }

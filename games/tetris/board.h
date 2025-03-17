@@ -15,11 +15,13 @@ namespace kudzem_games {
 		vector<vector<char>> all_cells;
 
 		static const unsigned _width = 10;
+		static const unsigned topic_top = 5;
+		static const unsigned topic_gap = 3;
 		size_t _height;
 
 		friend class board;
 
-		const char* topics[5] = { "Level:", "Score:", "Figures:", "Lines:", "Record:"};
+		const char* topics[4] = { "Level:", "Score:", "Figures:", "Lines:"};
 
 		const char empty_space_filler = space;
 
@@ -41,31 +43,45 @@ namespace kudzem_games {
 
 		void render_topics()
 		{
-			size_t line_shift = 1;
+			size_t line_shift = topic_top;
 			for (const char* topic : topics) {
 				std::copy(topic, topic + strlen(topic), all_cells[line_shift].begin());
-				line_shift+=3;
+				line_shift += topic_gap;
+			}
+		}
+
+		void set_next_figure(std::shared_ptr<figure> next_figure)
+		{
+			const auto& figure_cells = next_figure->get_cells();
+
+			std::fill(all_cells[1].begin(), all_cells[1].end(), empty_space_filler);
+			std::fill(all_cells[2].begin(), all_cells[2].end(), empty_space_filler);
+
+			size_t line_number = 1;
+			for (const auto& line : figure_cells) {
+				std::copy(line.begin(), line.end(), all_cells[line_number].begin());
+				line_number++;
 			}
 		}
 
 		void set_level(unsigned level)
 		{
-			write_number_in_line(level, 2);
+			write_number_in_line(level, topic_top + 1);
 		}
 
 		void set_score(unsigned score)
 		{
-			write_number_in_line(score, 5);
+			write_number_in_line(score, topic_top + topic_gap + 1);
 		}
 
 		void set_figures(unsigned figures)
 		{
-			write_number_in_line(figures, 8);
+			write_number_in_line(figures, topic_top + 2*topic_gap + 1);
 		}
 
 		void set_lines(unsigned lines)
 		{
-			write_number_in_line(lines, 11);
+			write_number_in_line(lines, topic_top + 3*topic_gap + 1);
 		}
 
 		void write_number_in_line(unsigned num, size_t line_number)
@@ -147,6 +163,11 @@ namespace kudzem_games {
 		void update_figures(unsigned level)
 		{
             info_panel->set_figures(level);
+		}
+
+		void update_next_figure(std::shared_ptr<figure> next_figure)
+		{
+            info_panel->set_next_figure(next_figure);
 		}
 
 		void update_lines(unsigned lines)

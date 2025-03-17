@@ -170,6 +170,8 @@ namespace kudzem_games {
 	void tetris::logic() {
 		std::cout << "logic" << std::endl;
 		_current_figure = generate_figure();
+		_next_figure = generate_figure();
+
 		while (!_stop) {
 			std::unique_lock lk(_event_queue_mx);
 			_event_queue_cv.wait(lk, [this] { return _event_queue.empty() == false; });
@@ -214,7 +216,9 @@ namespace kudzem_games {
 			else if (event == tetris_event::TOUCH_DOWN)
 			{
 				//std::cout << "Touch down" << std::endl;
-				_current_figure = generate_figure();
+				_current_figure = _next_figure;
+				_next_figure = generate_figure();
+				board->update_next_figure(_next_figure);
 				upgrade_level();
 			}
 			else if (event == tetris_event::BOARD_FULL)
@@ -222,6 +226,7 @@ namespace kudzem_games {
                 print_stats();
 				std::cout << "Game over" << std::endl;
 				save_record();
+				std::cout << "Record: " << _record << std::endl;
 				stop();
 				continue;
 			}
@@ -337,8 +342,6 @@ namespace kudzem_games {
 
 	void tetris::print_stats() const {
 
-		std::cout << "Record: " << _record << std::endl;
-		std::cout << "Efficiency: " << _score / _number_of_generated_obj << std::endl;
 		if (_paused) {
 			std::cout << "Pause" << std::endl;
 		}
@@ -348,14 +351,16 @@ namespace kudzem_games {
 
 		board->update_level(_level);
 		board->update_score(_score);
-		board->update_lines(n_of_exploided_lines);
+		board->update_lines(n_of_clear);
 		board->update_figures(_number_of_generated_obj);
 	}
 
 
 	void tetris::increase_score(size_t n_of_exploided_lines) {
 		_score += 100 * (pow(2, n_of_exploided_lines) - 1);
-		this->n_of_exploided_lines += n_of_exploided_lines;
+		this->n_of_clear += n_of_exploided_lines;
+
+		if (n_of_exploided_lines == 4) this->n_of_tetris_clear++;
 	}
 
 	void tetris_cfg::set_default() {
