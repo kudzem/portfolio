@@ -348,13 +348,14 @@ namespace kudzem_games {
 
 		board->update_level(_level);
 		board->update_score(_score);
-		// board->update_lines(1);
+		board->update_lines(n_of_exploided_lines);
 		board->update_figures(_number_of_generated_obj);
 	}
 
 
 	void tetris::increase_score(size_t n_of_exploided_lines) {
 		_score += 100 * (pow(2, n_of_exploided_lines) - 1);
+		this->n_of_exploided_lines += n_of_exploided_lines;
 	}
 
 	void tetris_cfg::set_default() {

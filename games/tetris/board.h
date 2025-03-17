@@ -21,11 +21,6 @@ namespace kudzem_games {
 
 		const char* topics[5] = { "Level:", "Score:", "Figures:", "Lines:", "Record:"};
 
-		unsigned _level;
-		unsigned _score;
-		unsigned _lines;
-		unsigned _figures;
-
 		const char empty_space_filler = space;
 
 	public:
@@ -55,24 +50,30 @@ namespace kudzem_games {
 
 		void set_level(unsigned level)
 		{
-			std::fill(all_cells[2].begin(), all_cells[2].end(), empty_space_filler);
-			all_cells[2][1] = level%10 + 48;
+			write_number_in_line(level, 2);
 		}
 
 		void set_score(unsigned score)
 		{
-			std::fill(all_cells[5].begin(), all_cells[5].end(), empty_space_filler);
-			auto score_str = std::to_string(score);
-			std::copy(score_str.begin(), score_str.end(), all_cells[5].begin() + 1);
+			write_number_in_line(score, 5);
 		}
 
 		void set_figures(unsigned figures)
 		{
-			std::fill(all_cells[8].begin(), all_cells[8].end(), empty_space_filler);
-			auto score_str = std::to_string(figures);
-			std::copy(score_str.begin(), score_str.end(), all_cells[8].begin() + 1);
+			write_number_in_line(figures, 8);
 		}
 
+		void set_lines(unsigned lines)
+		{
+			write_number_in_line(lines, 11);
+		}
+
+		void write_number_in_line(unsigned num, size_t line_number)
+		{
+			std::fill(all_cells[line_number].begin(), all_cells[line_number].end(), empty_space_filler);
+			auto str = std::to_string(num);
+			std::copy(str.begin(), str.end(), all_cells[line_number].begin());
+		}
 	};
 
 	class board {
@@ -148,10 +149,10 @@ namespace kudzem_games {
             info_panel->set_figures(level);
 		}
 
-		// board->update_level(_level);
-		// board->update_score(_score);
-		// board->update_lines(1);
-		// board->update_figures(_number_of_generated_obj);
+		void update_lines(unsigned lines)
+		{
+            info_panel->set_lines(lines);
+		}
 
 		void render_border()
 		{
