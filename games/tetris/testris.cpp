@@ -327,6 +327,7 @@ namespace kudzem_games {
 			std::unique_lock lk3(_game_mtx);
 			_current_figure_changed = false;
 			print_stats();
+			update_info_panel();
 
 			std::cout << "Render done" << std::endl;
 			_render_done_cv.notify_one();
@@ -337,14 +338,19 @@ namespace kudzem_games {
 
 	void tetris::print_stats() const {
 
-		std::cout << "Level: " << _level << std::endl;
-		std::cout << "Score: " << _score << std::endl;
 		std::cout << "Record: " << _record << std::endl;
-		std::cout << "Figures: " << _number_of_generated_obj << std::endl;
 		std::cout << "Efficiency: " << _score / _number_of_generated_obj << std::endl;
 		if (_paused) {
 			std::cout << "Pause" << std::endl;
 		}
+	}
+
+	void tetris::update_info_panel() {
+
+		board->update_level(_level);
+		board->update_score(_score);
+		// board->update_lines(1);
+		board->update_figures(_number_of_generated_obj);
 	}
 
 

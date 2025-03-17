@@ -18,6 +18,8 @@ namespace kudzem_games {
 
 		vector<char> empty_line;
 
+		friend class board;
+
 	public:
 		field(size_t width, size_t height) {
 

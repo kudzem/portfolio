@@ -63,6 +63,7 @@ namespace kudzem_games {
 		size_t generate_figure_idx_seqly();
 		void increase_score(size_t n_of_exploided_lines);
 		void print_stats() const;
+		void tetris::update_info_panel();
 	};
 
 }
