@@ -2,6 +2,7 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <map>
 
 namespace kudzem_games {
 
@@ -32,6 +33,11 @@ protected:
 	void save_record();
 	void read_record();
 
+	const std::map<unsigned, unsigned> level2tmo = { {0, 800}, {1, 717}, {2, 633}, {3, 550}, {4, 467},
+	{5, 383}, {6, 300}, {7, 217}, {8, 133}, {9, 100}, {10, 83},
+	{15, 66}, {20, 50}, {30, 17}
+   };
+
 private:
 
 public:
@@ -51,6 +57,8 @@ public:
 
 	virtual bool level_to_be_upgraded() = 0;
 	void upgrade_level();
+
+	void change_speed();
 
 	void launch();
 

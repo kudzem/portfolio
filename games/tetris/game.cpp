@@ -42,6 +42,22 @@ namespace kudzem_games {
 			_timer_interval_ms -= 100;
 			++_level;
 		}
+
+		change_speed();
+	}
+
+	void game::change_speed()
+	{
+        if (level2tmo.find(_level) != level2tmo.end())
+		{
+            _timer_interval_ms = level2tmo.at(_level);
+			return;
+		}
+
+		if (_level >= 30) _timer_interval_ms = level2tmo.at(30);
+		else if (_level >= 20) _timer_interval_ms = level2tmo.at(20);
+		else if (_level >= 15) _timer_interval_ms = level2tmo.at(15);
+		else _timer_interval_ms = level2tmo.at(10);
 	}
 
 	void game::read_record()
