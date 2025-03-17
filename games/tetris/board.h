@@ -77,7 +77,8 @@ namespace kudzem_games {
 
 		vector<vector<char>> all_cells;
 
-		static const unsigned border_width = 1;
+		static const unsigned border_width = 2;
+		static const unsigned info_panel_padding = 1;
 		static const unsigned info_field_width = 10;
 		size_t _board_width;
 		size_t _board_height;
@@ -97,8 +98,8 @@ namespace kudzem_games {
 			_field_width = field_width;
 			_field_height = field_height;
 
-			_board_width = field_width + 2*border_width + info_field_width;
-			_board_height = field_height + 2*border_width;
+			_board_width = field_width + 2*border_width + info_field_width + info_panel_padding;
+			_board_height = field_height + border_width;
 
 			field = std::make_shared<kudzem_games::field>(field_width, field_height);
 			info_panel = std::make_shared<kudzem_games::info_panel>(field_height);
@@ -117,7 +118,7 @@ namespace kudzem_games {
 		{
 			for (int l = 0; l < field->_board_height; ++l) {
 				for (int c = 0; c < field->_board_width; ++c) {
-					all_cells[l][c] = field->all_cells[l][c];
+					all_cells[l][c + border_width] = field->all_cells[l][c];
 				}
 			}
 		}
@@ -126,7 +127,7 @@ namespace kudzem_games {
 		{
 			for (int l = 0; l < info_panel->_height; ++l) {
 				for (int c = 0; c < info_panel->_width; ++c) {
-					all_cells[l][c + _field_width + border_width] = info_panel->all_cells[l][c];
+					all_cells[l][c + _field_width + 2*border_width + info_panel_padding] = info_panel->all_cells[l][c];
 				}
 			}
 		}
@@ -154,11 +155,15 @@ namespace kudzem_games {
 		void render_border()
 		{
 			for (int l = 0; l < _field_height + 1; ++l) {
-				for (int c = 0; c < _field_width + 1; ++c) {
-					if (l == _field_height || c == _field_width) {
-					    all_cells[l][c] = '#';
-					}
-				}
+				all_cells[l][0] = '<';
+				all_cells[l][1] = '!';
+				all_cells[l][_field_width + border_width] = '!';
+				all_cells[l][_field_width + border_width + 1] = '>';
+			}
+
+			for (int c = 0; c < _field_width; ++c) {
+                all_cells[_field_height][c + border_width] = '=';
+				all_cells[_field_height + 1][c + border_width] = 'v';
 			}
 		}
 

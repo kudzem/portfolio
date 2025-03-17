@@ -27,6 +27,7 @@ namespace kudzem_games {
 	const char fsj = 'J';
 	const char fsl = 'L';
 	const char es = ' ';
+	const char dot = '.';
 
 typedef std::vector<std::vector<std::vector<char>>> figure_cells;
 

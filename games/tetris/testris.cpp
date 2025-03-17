@@ -329,7 +329,6 @@ namespace kudzem_games {
 			print_stats();
 			update_info_panel();
 
-			std::cout << "Render done" << std::endl;
 			_render_done_cv.notify_one();
 		};
 

@@ -131,14 +131,6 @@ namespace kudzem_games {
 			return lines_to_exploid.size();
 		}
 
-		void flush_space() {
-			for (int l = 0; l < _board_height; ++l) {
-				for (int c = 0; c < _board_width; ++c) {
-					all_cells[l][c] = es;
-				}
-			}
-		}
-
 		void clean() {
 			for (int l = 0; l < _board_height; ++l) {
 				for (int c = 0; c < _board_width; ++c) {
