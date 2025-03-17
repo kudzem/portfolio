@@ -160,11 +160,23 @@ namespace kudzem_games {
 				all_cells[l][1] = '!';
 				all_cells[l][_field_width + border_width] = '!';
 				all_cells[l][_field_width + border_width + 1] = '>';
+
+				for (size_t i = 0; i < info_panel_padding; i++)
+				{
+					all_cells[l][_field_width + border_width + 2] = ' ';
+				}
 			}
 
 			for (int c = 0; c < _field_width; ++c) {
                 all_cells[_field_height][c + border_width] = '=';
-				all_cells[_field_height + 1][c + border_width] = 'v';
+			}
+
+			all_cells[_field_height + 1][0] = space;
+			all_cells[_field_height + 1][1] = space;
+
+			for (int c = 0; c < _field_width/2; ++c) {
+				all_cells[_field_height + 1][2*c + 2] = '\\';
+				all_cells[_field_height + 1][2*c+1 + 2] = '/';
 			}
 		}
 
