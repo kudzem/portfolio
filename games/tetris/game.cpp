@@ -37,8 +37,8 @@ namespace kudzem_games {
 	void game::upgrade_level()
 	{
 		std::unique_lock lk(_game_mtx);
-		if (_number_of_generated_obj % _level_upgrade_counter == 0 &&
-			_timer_interval_ms > 100) {
+		if (level_to_be_upgraded() && _timer_interval_ms > 100)
+		{
 			_timer_interval_ms -= 100;
 			++_level;
 		}

@@ -24,7 +24,7 @@ protected:
 	std::shared_ptr<game_config> cfg = nullptr;
 	std::shared_ptr<game_config> get_cfg() { return cfg; }
 
-	unsigned _timer_interval_ms = 1000;
+	unsigned _timer_interval_ms = 800;
 	unsigned _number_of_generated_obj = 0;
 	unsigned _level = 0;
 	unsigned _level_upgrade_counter = 10;
@@ -49,6 +49,7 @@ public:
 		_paused = !_paused;
 	}
 
+	virtual bool level_to_be_upgraded() = 0;
 	void upgrade_level();
 
 	void launch();

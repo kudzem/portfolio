@@ -54,6 +54,7 @@ namespace kudzem_games {
 		bool _current_figure_changed = false;
 
 		size_t n_of_clear = 0;
+		size_t n_of_clear_in_level = 0;
 		size_t n_of_tetris_clear = 0;
 
 	public:
@@ -68,6 +69,8 @@ namespace kudzem_games {
 		void increase_score(size_t n_of_exploided_lines);
 		void print_stats() const;
 		void tetris::update_info_panel();
+
+		bool level_to_be_upgraded() override;
 	};
 
 }

@@ -247,6 +247,16 @@ namespace kudzem_games {
 
 	}
 
+	bool tetris::level_to_be_upgraded()
+	{
+		// std::unique_lock lk(_game_mtx);
+
+		if (n_of_clear_in_level <= 10) return false;
+			
+		n_of_clear_in_level %= 10;
+		return true;
+	}
+
 	size_t
 	tetris::generate_figure_idx_randomly() {
 
@@ -358,9 +368,11 @@ namespace kudzem_games {
 
 	void tetris::increase_score(size_t n_of_exploided_lines) {
 		_score += 100 * (pow(2, n_of_exploided_lines) - 1);
-		this->n_of_clear += n_of_exploided_lines;
+		n_of_clear += n_of_exploided_lines;
+		n_of_clear_in_level += n_of_exploided_lines;
 
 		if (n_of_exploided_lines == 4) this->n_of_tetris_clear++;
+
 	}
 
 	void tetris_cfg::set_default() {
