@@ -267,7 +267,7 @@ namespace kudzem_games {
 	std::shared_ptr<figure>
 	tetris::generate_figure() {
 
-		auto idx = generate_figure_idx_randomly();
+                auto idx = generate_figure_idx_randomly();
 
 		++_number_of_generated_obj;
 		switch (idx) {
@@ -362,6 +362,11 @@ namespace kudzem_games {
                 board_ptr->update_level(_level);
                 board_ptr->update_score(_score);
                 board_ptr->update_lines(n_of_clear);
+
+                if (n_of_clear) {
+                    board_ptr->update_trt(100*n_of_tetris_clear/n_of_clear);
+                }
+
                 board_ptr->update_figures(_number_of_generated_obj);
 	}
 
@@ -371,8 +376,7 @@ namespace kudzem_games {
 		n_of_clear += n_of_exploided_lines;
 		n_of_clear_in_level += n_of_exploided_lines;
 
-		if (n_of_exploided_lines == 4) this->n_of_tetris_clear++;
-
+                if (n_of_exploided_lines == 4) n_of_tetris_clear += n_of_exploided_lines;
 	}
 
 	void tetris_cfg::set_default() {

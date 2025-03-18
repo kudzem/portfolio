@@ -22,7 +22,7 @@ namespace kudzem_games {
 
 		friend class board;
 
-		const char* topics[4] = { "Level:", "Score:", "Figures:", "Lines:"};
+		const char* topics[5] = { "Level:", "Score:", "Figures:", "Lines:", "TRT:"};
 
 		const char empty_space_filler = space;
 
@@ -83,6 +83,11 @@ namespace kudzem_games {
 		void set_lines(unsigned lines)
 		{
 			write_number_in_line(lines, topic_top + 3*topic_gap + 1);
+		}
+
+		void set_trt(unsigned trt)
+		{
+			write_number_in_line(trt, topic_top + 4*topic_gap + 1);
 		}
 
 		void write_number_in_line(unsigned num, size_t line_number)
@@ -174,6 +179,11 @@ namespace kudzem_games {
 		void update_lines(unsigned lines)
 		{
             info_panel_ptr->set_lines(lines);
+		}
+
+		void update_trt(unsigned trt)
+		{
+            info_panel_ptr->set_trt(trt);
 		}
 
 		void render_border()
