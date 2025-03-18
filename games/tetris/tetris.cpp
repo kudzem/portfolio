@@ -267,7 +267,7 @@ namespace kudzem_games {
 	std::shared_ptr<figure>
 	tetris::generate_figure() {
 
-                auto idx = generate_figure_idx_randomly();
+        auto idx = generate_figure_idx_randomly();
 
 		++_number_of_generated_obj;
 		switch (idx) {
