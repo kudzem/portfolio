@@ -218,7 +218,7 @@ namespace kudzem_games {
 				//std::cout << "Touch down" << std::endl;
 				_current_figure = _next_figure;
 				_next_figure = generate_figure();
-				board->update_next_figure(_next_figure);
+                                board_ptr->update_next_figure(_next_figure);
 				upgrade_level();
 			}
 			else if (event == tetris_event::BOARD_FULL)
@@ -289,7 +289,7 @@ namespace kudzem_games {
 	}
 
 	void tetris::visualize() {
-		board = std::make_shared<kudzem_games::board>(std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_width(),
+                board_ptr = std::make_shared<kudzem_games::board>(std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_width(),
 			std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_height());
 		std::cout << "visualize" << std::endl;
 
@@ -302,11 +302,11 @@ namespace kudzem_games {
 				lk.unlock();
 				continue;
 			}
-			board->field->draw_figure(_current_figure);
-			board->render();
-			board->show();
+                        board_ptr->field_ptr->draw_figure(_current_figure);
+                        board_ptr->render();
+                        board_ptr->show();
 
-			if (board->field->check_if_figure_touched(_current_figure)) {
+                        if (board_ptr->field_ptr->check_if_figure_touched(_current_figure)) {
 
 				if (_current_figure->is_not_moved()) {
 					lk.unlock();
@@ -315,13 +315,13 @@ namespace kudzem_games {
 					_event_queue.push(tetris_event::BOARD_FULL);
 					_event_queue_cv.notify_one();
 					lk2.unlock();
-					this->_current_figure_changed = false;
+                                        this->_current_figure_changed = false;
 					return;
 				}
 				//std::cout << "Touch happened" << std::endl;
-				board->field->freeze(_current_figure);
+                                board_ptr->field_ptr->freeze(_current_figure);
 
-				increase_score(board->field->exploid());
+                                increase_score(board_ptr->field_ptr->exploid());
 
 				// this is probably unsafe
 				_current_figure = nullptr;
@@ -359,10 +359,10 @@ namespace kudzem_games {
 
 	void tetris::update_info_panel() {
 
-		board->update_level(_level);
-		board->update_score(_score);
-		board->update_lines(n_of_clear);
-		board->update_figures(_number_of_generated_obj);
+                board_ptr->update_level(_level);
+                board_ptr->update_score(_score);
+                board_ptr->update_lines(n_of_clear);
+                board_ptr->update_figures(_number_of_generated_obj);
 	}
 
 
