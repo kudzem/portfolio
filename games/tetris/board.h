@@ -5,6 +5,7 @@
 #include "figure.h"
 #include "field.h"
 #include <memory>
+#include <cstring>
 
 using namespace std;
 
@@ -21,7 +22,7 @@ namespace kudzem_games {
 
 		friend class board;
 
-		const char* topics[4] = { "Level:", "Score:", "Figures:", "Lines:"};
+		const char* topics[5] = { "Level:", "Score:", "Figures:", "Lines:", "TRT:"};
 
 		const char empty_space_filler = space;
 
@@ -84,6 +85,11 @@ namespace kudzem_games {
 			write_number_in_line(lines, topic_top + 3*topic_gap + 1);
 		}
 
+		void set_trt(unsigned trt)
+		{
+			write_number_in_line(trt, topic_top + 4*topic_gap + 1);
+		}
+
 		void write_number_in_line(unsigned num, size_t line_number)
 		{
 			std::fill(all_cells[line_number].begin(), all_cells[line_number].end(), empty_space_filler);
@@ -109,8 +115,8 @@ namespace kudzem_games {
 
 	public:
 
-	    shared_ptr<field> field;
-		shared_ptr<info_panel> info_panel;
+	    shared_ptr<field> field_ptr;
+	    shared_ptr<info_panel> info_panel_ptr;
 
 	    board(size_t field_width, size_t field_height) {
 
@@ -120,8 +126,8 @@ namespace kudzem_games {
 			_board_width = field_width + 2*border_width + info_field_width + info_panel_padding;
 			_board_height = field_height + border_width;
 
-			field = std::make_shared<kudzem_games::field>(field_width, field_height);
-			info_panel = std::make_shared<kudzem_games::info_panel>(field_height);
+			field_ptr = std::make_shared<kudzem_games::field>(field_width, field_height);
+			info_panel_ptr = std::make_shared<kudzem_games::info_panel>(field_height);
 
 			all_cells.resize(_board_height);
 
@@ -134,45 +140,50 @@ namespace kudzem_games {
 
 		void get_field()
 		{
-			for (int l = 0; l < field->_board_height; ++l) {
-				for (int c = 0; c < field->_board_width; ++c) {
-					all_cells[l][c + border_width] = field->all_cells[l][c];
+			for (int l = 0; l < field_ptr->_board_height; ++l) {
+				for (int c = 0; c < field_ptr->_board_width; ++c) {
+					all_cells[l][c + border_width] = field_ptr->all_cells[l][c];
 				}
 			}
 		}
 
 		void get_info_panel()
 		{
-			for (int l = 0; l < info_panel->_height; ++l) {
-				for (int c = 0; c < info_panel->_width; ++c) {
-					all_cells[l][c + _field_width + 2*border_width + info_panel_padding] = info_panel->all_cells[l][c];
+			for (int l = 0; l < info_panel_ptr->_height; ++l) {
+				for (int c = 0; c < info_panel_ptr->_width; ++c) {
+					all_cells[l][c + _field_width + 2*border_width + info_panel_padding] = info_panel_ptr->all_cells[l][c];
 				}
 			}
 		}
 
 		void update_level(unsigned level)
 		{
-            info_panel->set_level(level);
+            info_panel_ptr->set_level(level);
 		}
 
 		void update_score(unsigned level)
 		{
-            info_panel->set_score(level);
+            info_panel_ptr->set_score(level);
 		}
 
 		void update_figures(unsigned level)
 		{
-            info_panel->set_figures(level);
+            info_panel_ptr->set_figures(level);
 		}
 
 		void update_next_figure(std::shared_ptr<figure> next_figure)
 		{
-            info_panel->set_next_figure(next_figure);
+            info_panel_ptr->set_next_figure(next_figure);
 		}
 
 		void update_lines(unsigned lines)
 		{
-            info_panel->set_lines(lines);
+            info_panel_ptr->set_lines(lines);
+		}
+
+		void update_trt(unsigned trt)
+		{
+            info_panel_ptr->set_trt(trt);
 		}
 
 		void render_border()
@@ -204,7 +215,7 @@ namespace kudzem_games {
 
 		void render()
 		{
-			field->render();
+			field_ptr->render();
 			get_field();
 			get_info_panel();
 		}

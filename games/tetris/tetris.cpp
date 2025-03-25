@@ -8,10 +8,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <cmath>
-bool kbhit() {
+char my_kbhit() {
     struct termios oldt, newt;
     int oldf;
-    char ch;
+    char ch = 0;
     bool oldf2;
 
     tcgetattr(STDIN_FILENO, &oldt);
@@ -33,7 +33,7 @@ bool kbhit() {
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     fcntl(STDIN_FILENO, F_SETFL, oldf);
 
-    return oldf2;
+    return ch;
 }
 
 char getch(void)
@@ -82,8 +82,8 @@ namespace kudzem_games {
 	;
 
 	tetris_event CheckKey(void) {
-		int key;
-		if (kbhit()) {
+		int key = my_kbhit();
+		if (key != 0) {
 //                        std::cout << "Key press detected" << std::endl;
 			key = getch();
 //                        std::cout << "Key = " << int(key) << std::endl;
@@ -131,9 +131,30 @@ namespace kudzem_games {
 		std::cout << "interaction" << std::endl;
 		while (!_stop) {
 
-			if (kbhit() != 0) {
-				//char c = getch();
-				auto key_event = CheckKey();
+			char key = my_kbhit();
+			if (key != 0) {
+
+				// std::cout << "Key pressed" << key << std::endl;
+
+				auto key_event = tetris_event::UNKNOWN_KEY_PRESSED;
+				if (key == 27) {
+					key_event = CheckKey();
+				}
+				else if (key == 32) {
+					key_event = tetris_event::PAUSE;
+				}
+				else if (key == 'w') {
+					key_event = tetris_event::ROTATE;
+				}
+				else if (key == 'a') {
+					key_event = tetris_event::MOVE_LEFT;
+				}
+				else if (key == 'd') {
+					key_event = tetris_event::MOVE_RIGHT;
+				}
+				else if (key == 's') {
+					key_event = tetris_event::MOVE_DOWN;
+				}
 
 				if (key_event != tetris_event::UNKNOWN_KEY_PRESSED &&
 					(_paused && key_event == tetris_event::PAUSE ||
@@ -218,7 +239,7 @@ namespace kudzem_games {
 				//std::cout << "Touch down" << std::endl;
 				_current_figure = _next_figure;
 				_next_figure = generate_figure();
-				board->update_next_figure(_next_figure);
+                                board_ptr->update_next_figure(_next_figure);
 				upgrade_level();
 			}
 			else if (event == tetris_event::BOARD_FULL)
@@ -267,7 +288,7 @@ namespace kudzem_games {
 	std::shared_ptr<figure>
 	tetris::generate_figure() {
 
-		auto idx = generate_figure_idx_randomly();
+        auto idx = generate_figure_idx_randomly();
 
 		++_number_of_generated_obj;
 		switch (idx) {
@@ -289,7 +310,7 @@ namespace kudzem_games {
 	}
 
 	void tetris::visualize() {
-		board = std::make_shared<kudzem_games::board>(std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_width(),
+                board_ptr = std::make_shared<kudzem_games::board>(std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_width(),
 			std::dynamic_pointer_cast<tetris_cfg>(cfg)->get_board_height());
 		std::cout << "visualize" << std::endl;
 
@@ -302,11 +323,11 @@ namespace kudzem_games {
 				lk.unlock();
 				continue;
 			}
-			board->field->draw_figure(_current_figure);
-			board->render();
-			board->show();
+                        board_ptr->field_ptr->draw_figure(_current_figure);
+                        board_ptr->render();
+                        board_ptr->show();
 
-			if (board->field->check_if_figure_touched(_current_figure)) {
+                        if (board_ptr->field_ptr->check_if_figure_touched(_current_figure)) {
 
 				if (_current_figure->is_not_moved()) {
 					lk.unlock();
@@ -315,13 +336,13 @@ namespace kudzem_games {
 					_event_queue.push(tetris_event::BOARD_FULL);
 					_event_queue_cv.notify_one();
 					lk2.unlock();
-					this->_current_figure_changed = false;
+                                        this->_current_figure_changed = false;
 					return;
 				}
 				//std::cout << "Touch happened" << std::endl;
-				board->field->freeze(_current_figure);
+                                board_ptr->field_ptr->freeze(_current_figure);
 
-				increase_score(board->field->exploid());
+                                increase_score(board_ptr->field_ptr->exploid());
 
 				// this is probably unsafe
 				_current_figure = nullptr;
@@ -359,10 +380,15 @@ namespace kudzem_games {
 
 	void tetris::update_info_panel() {
 
-		board->update_level(_level);
-		board->update_score(_score);
-		board->update_lines(n_of_clear);
-		board->update_figures(_number_of_generated_obj);
+                board_ptr->update_level(_level);
+                board_ptr->update_score(_score);
+                board_ptr->update_lines(n_of_clear);
+
+                if (n_of_clear) {
+                    board_ptr->update_trt(100*n_of_tetris_clear/n_of_clear);
+                }
+
+                board_ptr->update_figures(_number_of_generated_obj);
 	}
 
 
@@ -371,8 +397,7 @@ namespace kudzem_games {
 		n_of_clear += n_of_exploided_lines;
 		n_of_clear_in_level += n_of_exploided_lines;
 
-		if (n_of_exploided_lines == 4) this->n_of_tetris_clear++;
-
+                if (n_of_exploided_lines == 4) n_of_tetris_clear += n_of_exploided_lines;
 	}
 
 	void tetris_cfg::set_default() {

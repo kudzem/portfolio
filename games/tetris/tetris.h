@@ -39,7 +39,7 @@ namespace kudzem_games {
 	class tetris : public game {
 
 	private:
-		shared_ptr<board> board;
+		shared_ptr<board> board_ptr;
 		std::queue<tetris_event> _event_queue;
 		std::mutex _event_queue_mx;
 		std::condition_variable _event_queue_cv;
@@ -68,7 +68,7 @@ namespace kudzem_games {
 		size_t generate_figure_idx_seqly();
 		void increase_score(size_t n_of_exploided_lines);
 		void print_stats() const;
-		void tetris::update_info_panel();
+		void update_info_panel();
 
 		bool level_to_be_upgraded() override;
 	};

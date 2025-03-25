@@ -5,5 +5,5 @@ project(testris)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(testris "testris.cpp" "game.cpp" "tetris.h" "game.h" "main.cpp" "board.h" "field.h" "figure.h")
-target_link_libraries(testris -pthread)
+add_executable(tetris "tetris.cpp" "game.cpp" "tetris.h" "game.h" "main.cpp" "board.h" "field.h" "figure.h")
+target_link_libraries(tetris -pthread)
