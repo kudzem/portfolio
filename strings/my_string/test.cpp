@@ -63,7 +63,20 @@ int main() {
 		cout << "s size" << s.size() << endl;
 		cout << "s capacity" << s.capacity() << endl;
 		cout << "my_s = " << my_s << endl;
-		cout << "s size" << my_s.size() << endl;
-		cout << "s capacity" << my_s.capacity() << endl;
+		cout << "my_s size" << my_s.size() << endl;
+		cout << "my_s capacity" << my_s.capacity() << endl;
 	}
+
+	{
+		string s(5, 'O');
+		my_string my_s(5, 'O');
+
+		cout << "s = " << s << endl;
+		cout << "s size" << s.size() << endl;
+		cout << "s capacity" << s.capacity() << endl;
+		cout << "my_s = " << my_s << endl;
+		cout << "my_s size" << my_s.size() << endl;
+		cout << "my_s capacity" << my_s.capacity() << endl;
+	}
+
 }

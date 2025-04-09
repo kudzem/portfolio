@@ -8,9 +8,19 @@
 template <class T>
 class my_vector {
 private:
-    T* _data;
+
     size_t _size;
     size_t _capacity;
+
+protected:
+    T* _data;
+
+    void set_size(size_t size) {
+        std::cout << "Set size " << size << std::endl;
+        _size = size;
+    }
+
+private:
 
     void release_memory() {
         delete[] _data;
