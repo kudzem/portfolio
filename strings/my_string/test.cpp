@@ -8,10 +8,11 @@ int main() {
 	{
 		string s;
 		my_string my_s;
-
 		cout << "s = " << s << endl;
 		cout << "my s = " << my_s << endl;
 	}
+
+	cout << "-------" << endl;
 
 	{
 		string s = "i need a doctor";
@@ -27,6 +28,8 @@ int main() {
 		cout << "my s = " << my_s << endl;
 	}
 
+	cout << "-------" << endl;
+
 	{
 		string s("i need a doctor");
 		my_string my_s("i need a doctor");
@@ -38,6 +41,8 @@ int main() {
 		cout << "s size" << my_s.size() << endl;
 		cout << "s capacity" << my_s.capacity() << endl;
 	}
+
+	cout << "-------" << endl;
 
 	{
 		string s2("to bring me back to life");
@@ -53,6 +58,8 @@ int main() {
 		cout << "s capacity" << my_s.capacity() << endl;
 	}
 
+	cout << "-------" << endl;
+
 	{
 		string s2("to bring me back to life");
 		string s(std::move(s2));
@@ -66,6 +73,8 @@ int main() {
 		cout << "my_s size" << my_s.size() << endl;
 		cout << "my_s capacity" << my_s.capacity() << endl;
 	}
+
+	cout << "-------" << endl;
 
 	{
 		string s(5, 'O');
